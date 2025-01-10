@@ -1,0 +1,28 @@
+{
+  "name": "mon-app-electron",
+  "version": "1.0.0",
+  "description": "Mon application Electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"npm run start\" \"npm run watch-css\"",
+    "react-start": "react-scripts start",
+    "watch-css": "tailwindcss -i ./src/index.css -o ./dist/output.css --watch",
+    "build-css": "tailwindcss -i ./src/index.css -o ./dist/output.css --watch",
+    "init-db": "node ./js/initDb.js"
+  },
+  "dependencies": {
+    "concurrently": "*",
+    "electron": "*",
+    "poro": "^2.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sqlite3": "^5.1.6",
+    "sequelize": "^6.35.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}

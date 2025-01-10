@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Forces & Faiblesses - Skillcap</title>
+    <link rel="stylesheet" href="dist/output.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .player-icons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            padding: 2rem 0;
+            width: 100%;
+        }
+
+        .player-icons-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 3rem;
+            padding: 0 2rem;
+        }
+
+        .player-icon-container {
+            width: 350px;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .player-icon-container:hover {
+            transform: scale(1.05);
+        }
+
+        .player-icon-container.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
+        .top-row {
+            margin-bottom: 1rem;
+        }
+
+        .bottom-row {
+            padding: 0;
+            justify-content: center;
+            gap: 3rem;
+        }
+
+        .animated-text {
+            background: linear-gradient(
+                to right,
+                #7303c0,
+                #ec38bc,
+                #fdeff9,
+                #7303c0
+            );
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s linear infinite;
+        }
+
+        @keyframes gradient {
+            to {
+                background-position: 200% center;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 p-8">
+    <div class="max-w-7xl w-full px-4">
+        <a href="intern.html" class="text-white mb-8 inline-block hover:text-yellow-500">← Retour</a>
+        <h1 class="text-white text-4xl font-bold mb-8">Forces & Faiblesses</h1>
+
+        <!-- Liste des joueurs en une ligne -->
+        <div class="player-icons-container">
+            <div class="player-icons-row top-row">
+                <!-- 3 boîtes en haut -->
+                <div class="player-icon-container" data-game-name="MAT" data-tag-line="SHARP" data-role="TOP">
+                    <div class="bg-white rounded-xl p-6 h-48 relative overflow-hidden hover:shadow-lg transition-shadow">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
+                            <img src="assets/players/mat.jpg" alt="MAT icon" class="w-24 h-24 rounded-full object-cover">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-400 via-blue-300 to-transparent opacity-20"></div>
+                    </div>
+                    <div class="text-center mt-2 font-bold animated-text">MAT</div>
+                </div>
+
+                <div class="player-icon-container" data-game-name="Roshan" data-tag-line="LoL" data-role="JGL">
+                    <div class="bg-white rounded-xl p-6 h-48 relative overflow-hidden hover:shadow-lg transition-shadow">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
+                            <img src="assets/players/roshan.jpg" alt="Roshan icon" class="w-24 h-24 rounded-full object-cover">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-400 via-blue-300 to-transparent opacity-20"></div>
+                    </div>
+                    <div class="text-center mt-2 font-bold animated-text">Roshan</div>
+                </div>
+
+                <div class="player-icon-container" data-game-name="artoria" data-tag-line="BDG" data-role="MID">
+                    <div class="bg-white rounded-xl p-6 h-48 relative overflow-hidden hover:shadow-lg transition-shadow">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
+                            <img src="assets/players/artoria.jpg" alt="Camille fan acc icon" class="w-24 h-24 rounded-full object-cover">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-400 via-blue-300 to-transparent opacity-20"></div>
+                    </div>
+                    <div class="text-center mt-2 font-bold animated-text">Camille fan acc</div>
+                </div>
+            </div>
+            <div class="player-icons-row bottom-row">
+                <!-- 2 boîtes en bas -->
+                <div class="player-icon-container" data-game-name="xicor" data-tag-line="369" data-role="ADC">
+                    <div class="bg-white rounded-xl p-6 h-48 relative overflow-hidden hover:shadow-lg transition-shadow">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
+                            <img src="assets/players/xicor.jpg" alt="xicor icon" class="w-24 h-24 rounded-full object-cover">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-400 via-blue-300 to-transparent opacity-20"></div>
+                    </div>
+                    <div class="text-center mt-2 font-bold animated-text">xicor</div>
+                </div>
+
+                <div class="player-icon-container" data-game-name="Highway" data-tag-line="supp" data-role="SUP">
+                    <div class="bg-white rounded-xl p-6 h-48 relative overflow-hidden hover:shadow-lg transition-shadow">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 z-10">
+                            <img src="assets/players/highway.jpg" alt="loyal tea icon" class="w-24 h-24 rounded-full object-cover">
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-400 via-blue-300 to-transparent opacity-20"></div>
+                    </div>
+                    <div class="text-center mt-2 font-bold animated-text">loyal tea</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone d'affichage des stats -->
+        <div id="player-stats" class="hidden">
+            <!-- Le contenu des stats sera injecté ici -->
+        </div>
+
+        <!-- Template pour une icône de joueur -->
+        <template id="player-icon-template">
+            <div class="player-icon-container cursor-pointer">
+                <div class="player-icon-box">
+                    <div class="player-icon-bg"></div>
+                    <div class="player-icon-content">
+                        <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-100">
+                            <img class="w-full h-full object-cover" src="" alt="Player Icon">
+                        </div>
+                        <div class="player-name"></div>
+                        <div class="player-role"></div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Template pour une carte de joueur -->
+        <template id="player-card-template">
+            <div class="bg-white rounded-xl p-6 shadow-lg mb-6">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-16 h-16 rounded-full overflow-hidden">
+                        <img class="player-icon w-full h-full object-cover" src="" alt="Player Icon">
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold player-name"></h2>
+                        <div class="text-gray-600">
+                            <span class="player-winrate"></span> •
+                            <span class="player-wins-losses"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h3 class="font-semibold mb-2 text-green-600">Points Forts</h3>
+                        <ul class="strengths-list space-y-2"></ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold mb-2 text-red-600">Points Faibles</h3>
+                        <ul class="weaknesses-list space-y-2"></ul>
+                    </div>
+                </div>
+
+                <!-- Nouvelle section pour les statistiques détaillées -->
+                <div class="space-y-6">
+                    <!-- Statistiques générales -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-500">KDA</h4>
+                            <p class="text-xl font-bold player-kda"></p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-500">Win Rate</h4>
+                            <p class="text-xl font-bold player-overall-wr"></p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-500">Total Games</h4>
+                            <p class="text-xl font-bold player-total-games"></p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="text-sm font-medium text-gray-500">Main Role</h4>
+                            <p class="text-xl font-bold player-main-role"></p>
+                        </div>
+                    </div>
+
+                    <!-- Champions Stats -->
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Champions Statistics</h3>
+                        <div class="overflow-hidden rounded-lg border border-gray-200">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Champion</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Games</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Win Rate</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">KDA</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200 champions-stats-body">
+                                    <!-- Les stats des champions seront injectées ici -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <script>
+        window.PLAYERS = [
+            { gameName: "MAT", tagLine: "SHARP", role: "TOP" },
+            { gameName: "Roshan", tagLine: "LoL", role: "JGL" },
+            { gameName: "Camille fan acc", tagLine: "BDG", role: "MID" },
+            { gameName: "xicor", tagLine: "369", role: "ADC" },
+            { gameName: "loyal tea", tagLine: "supp", role: "SUP" }
+        ];
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="js/stats.js"></script>
+</body>
+</html>

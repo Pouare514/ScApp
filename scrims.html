@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Scrims - Skillcap</title>
+    <link rel="stylesheet" href="dist/output.css">
+    <style>
+        /* Animations et effets */
+        .team-card {
+            @apply rounded-lg p-4 transition-all duration-300;
+        }
+        .team-card.blue {
+            @apply bg-blue-50/80 hover:bg-blue-50;
+        }
+        .team-card.red {
+            @apply bg-red-50/80 hover:bg-red-50;
+        }
+        .player-card {
+            @apply bg-white p-3 rounded-lg shadow-sm hover:shadow-lg transition-all duration-200;
+        }
+        .stat-card {
+            @apply bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition-all duration-200;
+        }
+        .stat-value {
+            @apply font-mono text-lg font-semibold;
+        }
+        .scrim-item {
+            @apply bg-white/90 rounded-lg p-3 hover:bg-white cursor-pointer transition-all duration-200;
+        }
+        .objectives-grid {
+            @apply grid grid-cols-2 gap-4 text-sm font-medium;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 p-8">
+    <div class="max-w-7xl mx-auto">
+        <a href="intern.html" class="text-white mb-8 inline-block hover:text-yellow-500">← Retour</a>
+        <h1 class="text-white text-4xl font-bold mb-8">Scrims</h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Liste des Scrims -->
+            <div class="lg:col-span-1">
+                <div class="bg-white/90 rounded-xl p-4 shadow-lg sticky top-4">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Historique des Scrims</h2>
+                    <div class="space-y-2" id="scrims-list"></div>
+                </div>
+            </div>
+
+            <!-- Détails du Scrim -->
+            <div class="lg:col-span-3">
+                <div id="match-details" class="space-y-4">
+                    <div class="bg-white rounded-xl p-4 shadow-lg">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Détails du Match</h2>
+                        <div id="game-stats" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="team-card blue">
+                                <h3 class="text-lg font-semibold text-blue-800 mb-3">Équipe Bleue</h3>
+                                <div id="blue-team" class="space-y-2"></div>
+                            </div>
+                            <div class="team-card red">
+                                <h3 class="text-lg font-semibold text-red-800 mb-3">Équipe Rouge</h3>
+                                <div id="red-team" class="space-y-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white rounded-xl p-4 shadow-lg">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Objectifs</h3>
+                            <div id="objectives" class="space-y-2"></div>
+                        </div>
+                        <div class="bg-white rounded-xl p-4 shadow-lg">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Vision</h3>
+                            <div id="vision" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        const path = require('path');
+        const fs = require('fs').promises;
+
+        // Fonction utilitaire pour formater le temps
+        const formatTime = ms => {
+            const minutes = Math.floor(ms / 60000);
+            const seconds = Math.floor((ms % 60000) / 1000);
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        };
+
+        // Fonction pour lire un fichier JSON
+        async function readJsonFile(filePath) {
+            try {
+                const data = await fs.readFile(filePath, 'utf8');
+                return JSON.parse(data);
+            } catch (error) {
+                console.error(`Erreur lors de la lecture du fichier ${filePath}:`, error);
+                return null;
+            }
+        }
+
+        // Chargement des données modifié
+        async function loadScrimsList() {
+            try {
+                const appPath = await ipcRenderer.invoke('get-app-path');
+                const scrimsPath = path.join(appPath, 'scrims');
+                
+                // Lire les fichiers du dossier
+                let files;
+                try {
+                    files = await fs.readdir(scrimsPath);
+                } catch (error) {
+                    console.error('Erreur lors de la lecture du dossier scrims:', error);
+                    throw new Error(`Impossible de lire le dossier scrims: ${error.message}`);
+                }
+
+                const jsonFiles = files.filter(file => file.endsWith('.json'));
+                
+                if (jsonFiles.length === 0) {
+                    document.getElementById('scrims-list').innerHTML = 
+                        '<div class="text-gray-500 p-4">Aucun fichier de scrim trouvé</div>';
+                    return;
+                }
+
+                // Lire chaque fichier JSON
+                const scrims = [];
+                for (const file of jsonFiles) {
+                    const filePath = path.join(scrimsPath, file);
+                    try {
+                        const scrimData = await readJsonFile(filePath);
+                        if (scrimData) {
+                            scrims.push({
+                                ...scrimData,
+                                filename: file
+                            });
+                        }
+                    } catch (error) {
+                        console.error(`Erreur lors de la lecture du fichier ${file}:`, error);
+                        continue; // Continue avec le prochain fichier en cas d'erreur
+                    }
+                }
+
+                if (scrims.length === 0) {
+                    document.getElementById('scrims-list').innerHTML = 
+                        '<div class="text-yellow-500 p-4">Aucun scrim valide trouvé</div>';
+                    return;
+                }
+
+                // Trier les scrims par date
+                scrims.sort((a, b) => b.filename.localeCompare(a.filename));
+
+                // Afficher la liste et le premier scrim
+                displayScrimsList(scrims);
+                displayMatchDetails(scrims[0]);
+
+            } catch (error) {
+                console.error('Erreur:', error);
+                document.getElementById('scrims-list').innerHTML = 
+                    `<div class="text-red-500 p-4">Erreur: ${error.message}</div>`;
+            }
+        }
+
+        // Affichage de la liste des scrims
+        function displayScrimsList(scrims) {
+            const scrimsList = document.getElementById('scrims-list');
+            
+            // Grouper les scrims par équipe
+            const scrimsByTeam = scrims.reduce((acc, scrim) => {
+                const teamName = scrim.filename.split('-')[0];
+                if (!acc[teamName]) {
+                    acc[teamName] = [];
+                }
+                acc[teamName].push(scrim);
+                return acc;
+            }, {});
+        
+            // Créer le HTML pour chaque équipe
+            const html = Object.entries(scrimsByTeam).map(([teamName, teamScrims]) => {
+                // Trier les scrims de l'équipe par date et numéro de game
+                teamScrims.sort((a, b) => {
+                    const [dateA, gameA] = a.filename.split('_');
+                    const [dateB, gameB] = b.filename.split('_');
+                    const dateCompare = dateB.localeCompare(dateA);
+                    if (dateCompare !== 0) return dateCompare;
+                    return parseInt(gameB) - parseInt(gameA);
+                });
+        
+                return `
+                    <div class="mb-6">
+                        <h3 class="text-gray-700 font-bold mb-2">${teamName}</h3>
+                        <div class="space-y-2">
+                            ${teamScrims.map(scrim => {
+                                const winner = scrim.participants.find(p => p.WIN === "Win")?.TEAM;
+                                const winnerClass = winner === "100" ? "border-l-4 border-blue-500" : "border-l-4 border-red-500";
+                                const [datePart, gamePart] = scrim.filename.split('_');
+                                const date = datePart.split('-').slice(1).reverse().join('/');
+                                const gameNumber = gamePart.split('.')[0];
+                                
+                                return `
+                                    <div class="scrim-item ${winnerClass}" onclick='displayMatchDetails(${JSON.stringify(scrim)})'>
+                                        <div class="flex justify-between items-center">
+                                            <div>
+                                                <div class="font-medium">Game ${gameNumber} - ${date}</div>
+                                                <div class="text-sm text-gray-600">
+                                                    ${formatTime(scrim.gameDuration)}
+                                                    <span class="ml-2">
+                                                        ${winner === "100" ? "Victoire Bleue" : "Victoire Rouge"}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="text-xs px-2 py-1 rounded ${winner === "100" ? "bg-blue-100 text-blue-800" : "bg-red-100 text-red-800"}">
+                                                ${calculateTotalKills(splitTeams(scrim.participants))} kills
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        
+            scrimsList.innerHTML = html;
+        }
+        
+        // Fonction utilitaire pour séparer les équipes
+        function splitTeams(participants) {
+            const uniqueParticipants = Array.from(
+                new Map(participants.map(p => [p.PUUID, p])).values()
+            );
+            return {
+                blue: uniqueParticipants.filter(p => p.TEAM === "100"),
+                red: uniqueParticipants.filter(p => p.TEAM === "200")
+            };
+        }
+
+        // Affichage des détails du match
+        function displayMatchDetails(match) {
+            const uniqueParticipants = Array.from(
+                new Map(match.participants.map(p => [p.PUUID, p])).values()
+            );
+
+            const teams = {
+                blue: uniqueParticipants.filter(p => p.TEAM === "100"), 
+                red: uniqueParticipants.filter(p => p.TEAM === "200")
+            };
+
+            // Afficher l'avertissement si équipe incomplète
+            const showWarning = teams.blue.length !== 5 || teams.red.length !== 5;
+            const warningHtml = showWarning ? `
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-4">
+                    <div class="flex">
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                ${teams.blue.length} joueurs côté bleu vs ${teams.red.length} joueurs côté rouge
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            ` : '';
+
+            // Stats générales avec vérification de la durée
+            const gameStats = document.getElementById('game-stats');
+            gameStats.innerHTML = warningHtml + `
+                <div class="stat-card">
+                    <div class="text-sm font-medium">Durée</div>
+                    <div class="stat-value">${formatTime(match.gameDuration)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-sm font-medium">Version</div>
+                    <div class="stat-value">${match.gameVersion.split('.').slice(0,2).join('.')}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-sm font-medium">Total Kills</div>
+                    <div class="stat-value">${calculateTotalKills(teams)}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-sm font-medium">Gold Diff</div>
+                    <div class="stat-value">${calculateGoldDiff(teams)}</div>
+                </div>
+            `;
+
+            // Définir les positions standards et leurs noms en français
+            const positions = {
+                "TOP": "Top",
+                "JUNGLE": "Jungle",
+                "MIDDLE": "Mid",
+                "BOTTOM": "ADC",
+                "UTILITY": "Support"
+            };
+
+            // Afficher les équipes
+            ['blue', 'red'].forEach(team => {
+                const teamElement = document.getElementById(`${team}-team`);
+                const teamArray = teams[team];
+                
+                // Créer un mapping des joueurs par position
+                const playersByPosition = {
+                    'TOP': null,
+                    'JUNGLE': null,
+                    'MIDDLE': null,
+                    'BOTTOM': null,
+                    'UTILITY': null
+                };
+
+                // Attribuer les joueurs aux positions
+                teamArray.forEach(player => {
+                    // Si le joueur a une position valide, l'assigner
+                    const position = player.TEAM_POSITION;
+                    if (position && position !== 'AFK') {
+                        playersByPosition[position] = player;
+                    } else {
+                        // Chercher une position libre pour les joueurs sans position
+                        for (const pos of Object.keys(playersByPosition)) {
+                            if (!playersByPosition[pos]) {
+                                playersByPosition[pos] = player;
+                                break;
+                            }
+                        }
+                    }
+                });
+
+                // Générer le HTML pour chaque position
+                const html = Object.entries(playersByPosition).map(([position, player]) => {
+                    if (player) {
+                        return createPlayerCard(player, match.gameDuration, position);
+                    } else {
+                        return createEmptyPositionCard(position);
+                    }
+                }).join('');
+                
+                teamElement.innerHTML = html;
+            });
+
+            updateObjectives(teams);
+            updateVision(teams);
+        }
+
+        // Fonction pour créer une carte de joueur
+        function createPlayerCard(player, gameDuration, position) {
+            const totalCS = parseInt(player.MINIONS_KILLED || 0) + parseInt(player.NEUTRAL_MINIONS_KILLED || 0);
+            const gameMinutes = gameDuration / 60000;
+            const csPerMin = (totalCS / gameMinutes).toFixed(1);
+            
+            const kills = parseInt(player.CHAMPIONS_KILLED || 0);
+            const deaths = parseInt(player.NUM_DEATHS || 1);
+            const assists = parseInt(player.ASSISTS || 0);
+            const kda = ((kills + assists) / Math.max(1, deaths)).toFixed(2);
+            
+            return `
+                <div class="player-card">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="font-medium">${player.SKIN || 'Champion inconnu'}</div>
+                            <div class="text-xs text-gray-400">${getPositionName(position)}</div>
+                            <div class="text-sm text-gray-500">
+                                CS: ${totalCS} (${csPerMin}/min)
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold ${getKDAColor(kda)}">
+                                ${kills}/${deaths}/${assists}
+                            </div>
+                            <div class="text-sm text-gray-500">${kda} KDA</div>
+                        </div>
+                    </div>
+                    <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-600">
+                        <div>Dégâts: ${(parseInt(player.TOTAL_DAMAGE_DEALT_TO_CHAMPIONS || 0) / 1000).toFixed(1)}k</div>
+                        <div>Or: ${(parseInt(player.GOLD_EARNED || 0) / 1000).toFixed(1)}k</div>
+                        <div>Vision: ${player.VISION_SCORE || 0}</div>
+                        <div>Niveau: ${player.LEVEL || 0}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Fonction pour créer une carte de position vide
+        function createEmptyPositionCard(position) {
+            return `
+                <div class="player-card opacity-75 border border-dashed border-gray-300">
+                    <div class="flex justify-between items-start">
+                        <div class="font-medium text-gray-500">
+                            Position ${getPositionName(position)} manquante
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Fonctions utilitaires
+        function calculateTotalKills(teams) {
+            const blueKills = teams.blue.reduce((acc, p) => acc + parseInt(p.CHAMPIONS_KILLED || 0), 0);
+            const redKills = teams.red.reduce((acc, p) => acc + parseInt(p.CHAMPIONS_KILLED || 0), 0);
+            return blueKills + redKills;
+        }
+
+        // Fonction pour calculer la différence d'or avec vérification des valeurs
+        function calculateGoldDiff(teams) {
+            const blueGold = teams.blue.reduce((acc, p) => acc + parseInt(p.GOLD_EARNED || 0), 0);
+            const redGold = teams.red.reduce((acc, p) => acc + parseInt(p.GOLD_EARNED || 0), 0);
+            const diff = blueGold - redGold;
+            const absDiff = Math.abs(diff / 1000).toFixed(1);
+            return `${absDiff}k ${diff > 0 ? '(Blue)' : '(Red)'}`;
+        }
+
+        function getKDAColor(kda) {
+            if (kda >= 5) return 'text-yellow-500';
+            if (kda >= 3) return 'text-green-500';
+            if (kda >= 1) return 'text-gray-700';
+            return 'text-red-500';
+        }
+
+        // Fonction pour calculer les statistiques d'objectifs d'une équipe
+        function calculateTeamObjectives(team) {
+            return {
+                dragons: team.reduce((acc, p) => acc + parseInt(p.DRAGON_KILLS || 0), 0),
+                barons: team.reduce((acc, p) => acc + parseInt(p.BARON_KILLS || 0), 0),
+                towers: team.reduce((acc, p) => acc + parseInt(p.TURRETS_KILLED || 0), 0)
+            };
+        }
+
+        // Mise à jour des objectifs avec un meilleur formatage
+        function updateObjectives(teams) {
+            const blueStats = calculateTeamObjectives(teams.blue);
+            const redStats = calculateTeamObjectives(teams.red);
+
+            document.getElementById('objectives').innerHTML = `
+                <div class="objectives-grid">
+                    <div class="text-blue-800 space-y-2">
+                        <div class="flex justify-between">
+                            <span>Dragons:</span>
+                            <span class="font-mono">${blueStats.dragons}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Barons:</span>
+                            <span class="font-mono">${blueStats.barons}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Tours:</span>
+                            <span class="font-mono">${blueStats.towers}</span>
+                        </div>
+                    </div>
+                    <div class="text-red-800 space-y-2">
+                        <!-- Même structure pour l'équipe rouge -->
+                    </div>
+                </div>
+            `;
+        }
+
+        // Mise à jour de la vision
+        function updateVision(teams) {
+            const calculateVisionStats = team => team.reduce((acc, player) => ({
+                score: acc.score + parseInt(player.VISION_SCORE || 0),
+                wards: acc.wards + parseInt(player.WARD_PLACED || 0),
+                pinks: acc.pinks + parseInt(player.WARD_PLACED_DETECTOR || 0)
+            }), { score: 0, wards: 0, pinks: 0 });
+
+            const blueVision = calculateVisionStats(teams.blue);
+            const redVision = calculateVisionStats(teams.red);
+
+            document.getElementById('vision').innerHTML = `
+                <div class="objectives-grid">
+                    <div class="text-blue-800">
+                        <div>Score: ${blueVision.score}</div>
+                        <div>Wards: ${blueVision.wards}</div>
+                        <div>Pinks: ${blueVision.pinks}</div>
+                    </div>
+                    <div class="text-red-800">
+                        <div>Score: ${redVision.score}</div>
+                        <div>Wards: ${redVision.wards}</div>
+                        <div>Pinks: ${redVision.pinks}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Fonction utilitaire pour obtenir le nom de la position
+        function getPositionName(position) {
+            const positions = {
+                'TOP': 'Top',
+                'JUNGLE': 'Jungle',
+                'MIDDLE': 'Mid',
+                'BOTTOM': 'ADC',
+                'UTILITY': 'Support',
+                'AFK': 'Position inconnue'
+            };
+            return positions[position] || 'Position inconnue';
+        }
+
+        // Initialisation
+        window.onload = loadScrimsList;
+    </script>
+</body>
+</html>

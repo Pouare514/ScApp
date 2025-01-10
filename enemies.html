@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Forces & Faiblesses - Skillcap</title>
+    <link rel="stylesheet" href="dist/output.css">
+</head>
+<body class="bg-slate-900 p-8">
+    <div class="max-w-7xl mx-auto">
+        <a href="intern.html" class="text-white mb-8 inline-block hover:text-yellow-500">← Retour</a>
+        <h1 class="text-white text-4xl font-bold mb-8">Forces & Faiblesses</h1>
+
+        <div class="mb-6">
+            <select id="team-selector" class="w-full md:w-64 p-2 rounded-lg bg-white text-gray-800">
+                <option value="">Choisir une équipe...</option>
+            </select>
+        </div>
+        
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Derniers matchs</h2>
+                    <div id="recent-matches" class="space-y-2"></div>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Roster actuel</h2>
+                    <div id="team-roster" class="space-y-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { LeaguepediaAPI } from './js/leagueStats.js';
+        
+        const api = new LeaguepediaAPI();
+        const teamSelector = document.getElementById('team-selector');
+        
+        async function loadTeams() {
+            try {
+                teamSelector.innerHTML = '<option value="">Chargement des équipes...</option>';
+                const teams = await api.fetchTeamsList();
+
+                teamSelector.innerHTML = '<option value="">Choisir une équipe...</option>';
+                
+                if (teams && teams.length > 0) {
+                    const uniqueTeams = new Set();
+                    teams.forEach(team => {
+                        if (team?.title?.Team) {
+                            uniqueTeams.add(team.title.Team);
+                        }
+                    });
+
+                    Array.from(uniqueTeams).sort().forEach(teamName => {
+                        const option = document.createElement('option');
+                        option.value = teamName;
+                        option.textContent = teamName;
+                        teamSelector.appendChild(option);
+                    });
+                } else {
+                    teamSelector.innerHTML = '<option value="">Aucune équipe trouvée</option>';
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                teamSelector.innerHTML = '<option value="">Erreur de chargement</option>';
+            }
+        }
+
+        async function loadTeamInfo(teamName) {
+            if (!teamName) return;
+            
+            const matchesContainer = document.getElementById('recent-matches');
+            const rosterContainer = document.getElementById('team-roster');
+            
+            // Message d'attente pendant le chargement
+            matchesContainer.innerHTML = '<div class="text-blue-600">Chargement des données...</div>';
+            rosterContainer.innerHTML = '<div class="text-blue-600">Chargement du roster...</div>';
+            
+            try {
+                const [stats, roster] = await Promise.all([
+                    api.fetchTeamStats(teamName),
+                    api.fetchTeamRoster(teamName)
+                ]);
+
+                // Affichage des statistiques
+                matchesContainer.innerHTML = `
+                    <div class="bg-gray-100 p-4 rounded">
+                        <div class="font-semibold mb-2">${teamName}</div>
+                        <div class="text-gray-600">
+                            Les statistiques seront disponibles une fois que la saison LFL Division 2 2025 aura commencé.
+                        </div>
+                        <div class="mt-2 text-sm text-blue-600">
+                            Date de début prévue : Janvier 2025
+                        </div>
+                    </div>
+                `;
+
+                // Affichage du roster
+                rosterContainer.innerHTML = roster.length > 0 
+                    ? roster.map(player => `
+                        <div class="bg-gray-100 p-3 rounded mb-2">
+                            <div class="font-semibold">${player.title.Player || 'Joueur à confirmer'}</div>
+                            <div>${player.title.Role || 'Rôle à confirmer'}</div>
+                        </div>
+                    `).join('')
+                    : `
+                        <div class="bg-gray-100 p-4 rounded">
+                            <div class="text-gray-600">
+                                Le roster officiel n'a pas encore été annoncé pour la saison 2025.
+                            </div>
+                            <div class="mt-2 text-sm text-blue-600">
+                                Revenez bientôt pour plus d'informations !
+                            </div>
+                        </div>
+                    `;
+
+            } catch (error) {
+                console.log('Info: Données non disponibles pour le moment');
+                matchesContainer.innerHTML = `
+                    <div class="bg-gray-100 p-4 rounded">
+                        <div class="text-gray-600">
+                            Les données pour la saison LFL Division 2 2025 ne sont pas encore disponibles.
+                        </div>
+                    </div>
+                `;
+                rosterContainer.innerHTML = `
+                    <div class="bg-gray-100 p-4 rounded">
+                        <div class="text-gray-600">
+                            Le roster sera annoncé prochainement.
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        teamSelector.addEventListener('change', (e) => loadTeamInfo(e.target.value));
+        
+        // Chargement initial des équipes
+        loadTeams();
+    </script>
+</body>
+</html>

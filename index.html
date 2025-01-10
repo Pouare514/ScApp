@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SkillCap Data Center</title>
+    <link rel="stylesheet" href="dist/output.css">
+    <style>
+        .card-link {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card-link:hover {
+            transform: scale(1.02);
+        }
+        
+        .animated-text {
+            background: linear-gradient(
+                to right,
+                #4824e8,
+                #7303c0,
+                #ec38bc,
+                #fdeff9,
+                #4824e8
+            );
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s linear infinite;
+        }
+
+        @keyframes gradient {
+            to {
+                background-position: 200% center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen bg-slate-900 p-8">
+        <!-- Header avec logo -->
+        <div class="flex justify-center mb-12">
+            <div class="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center">
+                <img src="assets/logo.png" alt="Logo" class="w-full h-full object-cover">
+            </div>
+        </div>
+
+        <!-- Titre principal -->
+        <h1 class="text-white text-4xl font-bold text-center mb-16">
+            SKILLCAP DATA CENTER
+        </h1>
+
+        <!-- Container pour les cartes -->
+        <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Carte Intern Data -->
+            <a href="intern.html" class="group card-link max-w-sm mx-auto w-full">
+                <h2 class="text-white text-3xl font-bold mb-4 text-center">
+                    INTERN DATA
+                </h2>
+                <div class="bg-white rounded-xl p-6 h-48 relative overflow-hidden group-hover:shadow-lg transition-shadow">
+                    <div class="absolute inset-0 flex items-center justify-center p-4">
+                        <img src="assets/intern.png" alt="Intern Data" class="w-full h-full object-contain z-10">
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-pink-400 via-blue-300 to-transparent opacity-20"></div>
+                </div>
+            </a>
+
+            <!-- Carte Extern Data -->
+            <a href="extern.html" class="group card-link max-w-sm mx-auto w-full">
+                <h2 class="text-white text-3xl font-bold mb-4 text-center">
+                    EXTERN DATA
+                </h2>
+                <div class="bg-white rounded-xl p-6 h-48 relative overflow-hidden group-hover:shadow-lg transition-shadow">
+                    <div class="absolute inset-0 flex items-center justify-center p-4">
+                        <img src="assets/extern.png" alt="Extern Data" class="w-full h-full object-contain z-10">
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-pink-400 via-blue-300 to-transparent opacity-20"></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="fixed bottom-4 right-4 flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full overflow-hidden">
+                <img src="assets/avatar.png" alt="Avatar" class="w-full h-full object-cover">
+            </div>
+            <span class="font-bold animated-text">POUARE</span>
+        </div>
+    </div>
+</body>
+</html>

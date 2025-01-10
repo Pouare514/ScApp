@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Meta & Patch - Skillcap</title>
+    <link rel="stylesheet" href="dist/output.css">
+    <style>
+        .glow-text {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #e60073; }
+            to { text-shadow: 0 0 10px #fff, 0 0 20px #ff4da6, 0 0 30px #ff4da6; }
+        }
+        
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        .badge {
+            @apply px-2 py-0.5 text-xs font-medium rounded-full;
+        }
+        .nerf {
+            @apply bg-red-100 text-red-800;
+        }
+        .buff {
+            @apply bg-green-100 text-green-800;
+        }
+        .glow-card {
+            transition: all 0.3s ease;
+        }
+        .glow-card:hover {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
+        }
+        .atakhan-bg {
+            background: linear-gradient(135deg, #2D3748 0%, #742a2a 100%);
+            animation: bg-shift 10s ease infinite;
+        }
+        @keyframes bg-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .noxus-gradient {
+            background: linear-gradient(135deg, #1a0f0f 0%, #4a1c1c 50%, #862121 100%);
+        }
+        .noxus-border {
+            border: 2px solid rgba(168, 0, 0, 0.3);
+        }
+        .noxus-text-glow {
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(168, 0, 0, 0.2);
+        }
+        .noxus-theme {
+            background: linear-gradient(135deg, #1a0f0f 0%, #2a1515 100%);
+            color: #e0d0d0;
+        }
+        .noxus-card {
+            background: linear-gradient(135deg, #2d1f1f 0%, #3a2828 100%);
+            border: 1px solid #4a2828;
+            transition: all 0.3s ease;
+        }
+        .noxus-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(200, 0, 0, 0.2);
+        }
+        .noxus-title {
+            color: #ff4444;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+        .noxus-subtitle {
+            color: #cc3333;
+        }
+        .stat-change {
+            font-family: monospace;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+        }
+        .stat-nerf {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff4444;
+        }
+        .stat-buff {
+            background: rgba(0, 255, 0, 0.1);
+            color: #44ff44;
+        }
+        .noxus-main-title {
+            background: linear-gradient(135deg, #ff4444 0%, #cc3333 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 p-8">
+    <div class="max-w-7xl mx-auto">
+        <a href="extern.html" class="text-white mb-8 inline-block hover:text-yellow-500">← Retour</a>
+        <h1 class="text-4xl font-bold mb-8 noxus-main-title">
+            Meta & Patch
+        </h1>
+        
+        <div class="bg-white rounded-xl p-6 shadow-lg">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Analyse Meta</h2>
+                <!-- Espace pour l'analyse meta -->
+            </div>
+        </div>
+
+        <div>
+            <label for="patchSelect" class="text-white">Sélection du patch :</label>
+            <select id="patchSelect" name="patchSelect" class="mb-4 ml-2 p-1 rounded bg-gray-200">
+                <option value="15.1">Patch 15.1</option>
+            </select>
+        </div>
+
+        <div class="noxus-theme rounded-xl p-6 shadow-lg mt-6">
+            <!-- Section Introduction -->
+            <div class="relative mb-12 p-6 rounded-xl bg-gradient-to-br from-red-900/30 to-gray-900/30">
+                <div class="space-y-4 text-gray-200">
+                    <h2 class="text-3xl font-bold noxus-title mb-4">Patch 15.1: Season of Noxus</h2>
+                    <div class="prose prose-invert">
+                        <p class="text-lg">A brand-new jungle monster in Atakhan, new turrets, map geometry changes, and a complete visual overhaul bring Noxus to Summoner's Rift in 2025.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Atakhan -->
+            <section class="noxus-card rounded-xl p-6 mb-8">
+                <h3 class="text-2xl noxus-subtitle mb-6">Atakhan, Bringer of Ruin</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div class="bg-black/30 rounded-lg p-4">
+                            <h4 class="text-red-400 font-semibold mb-2">Spawn Conditions</h4>
+                            <ul class="text-gray-300 space-y-2">
+                                <li>• Spawns at 20 minutes</li>
+                                <li>• Based on most kills/deaths by 14 minutes</li>
+                                <li>• Fallback: Side with most damage taken</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-black/30 rounded-lg p-4">
+                            <h4 class="text-red-400 font-semibold mb-2">Variants</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="text-yellow-500">Ruinous Atakhan</h5>
+                                    <p class="text-gray-300 text-sm">Spawns in high-kill games. Grants Bloody Petals and spawns additional Roses.</p>
+                                </div>
+                                <div>
+                                    <h5 class="text-purple-400">Voracious Atakhan</h5>
+                                    <p class="text-gray-300 text-sm">
+                                        • False Life (180s): Stasis for 5.5s on death<br>
+                                        • +40 bonus gold per champion takedown
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="bg-black/30 rounded-lg p-4">
+                            <h4 class="text-red-400 font-semibold mb-2">Blood Roses</h4>
+                            <ul class="text-gray-300 space-y-2">
+                                <li>• Permanent power buff</li>
+                                <li>• Team-wide XP bonus</li>
+                                <li>• Spawns on champion corpses</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Map Changes -->
+            <section class="noxus-card rounded-xl p-6 mb-8">
+                <h3 class="text-2xl noxus-subtitle mb-6">Map Changes</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Objectifs -->
+                    <div class="bg-black/30 rounded-lg p-4">
+                        <h4 class="text-red-400 font-semibold mb-4">Objective Timers</h4>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="text-center p-2 rounded bg-blue-900/30">
+                                <span class="block text-blue-400">Herald</span>
+                                <span class="text-lg text-gray-300">16 min</span>
+                            </div>
+                            <div class="text-center p-2 rounded bg-red-900/30">
+                                <span class="block text-red-400">Atakhan</span>
+                                <span class="text-lg text-gray-300">20 min</span>
+                            </div>
+                            <div class="text-center p-2 rounded bg-purple-900/30">
+                                <span class="block text-purple-400">Baron</span>
+                                <span class="text-lg text-gray-300">25 min</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Continue with other sections... -->
+                </div>
+            </section>
+
+            <!-- Champions Section -->
+            <section class="noxus-card rounded-xl p-6 mb-8">
+                <h3 class="text-2xl noxus-subtitle mb-6">Champion Changes</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Ashe -->
+                    <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 rounded-lg p-4 hover:translate-y-1 transition-all">
+                        <div class="flex items-center mb-4">
+                            <img src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/Ashe.png" 
+                                 alt="Ashe" 
+                                 class="w-16 h-16 rounded-full border-2 border-blue-400/50">
+                            <div class="ml-4">
+                                <h4 class="text-blue-300 text-lg font-bold">Ashe</h4>
+                                <div class="flex gap-2 mt-1">
+                                    <span class="badge bg-blue-900/50 text-blue-200">Marksman</span>
+                                    <span class="badge buff">Buffed</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="bg-black/20 rounded-lg p-3">
+                                <div class="flex items-center mb-2">
+                                    <img src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/passive/Ashe_P.png" 
+                                         class="w-8 h-8 rounded-lg border border-blue-500/30">
+                                    <span class="text-blue-200 font-semibold ml-2">Frost Shot</span>
+                                </div>
+                                <ul class="space-y-1 ml-10 text-gray-300">
+                                    <li class="flex items-center gap-2">
+                                        <span class="stat-nerf">15%</span>
+                                        <span>→</span>
+                                        <span class="stat-buff">0%</span>
+                                        <span class="text-gray-400">base bonus damage</span>
+                                    </li>
+                                    <li class="text-green-400">+ Now triggers on first attack</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-black/20 rounded-lg p-3">
+                                <div class="flex items-center mb-2">
+                                    <img src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/spell/AsheQ.png" 
+                                         class="w-8 h-8 rounded-lg border border-blue-500/30">
+                                    <span class="text-blue-200 font-semibold ml-2">Ranger's Focus</span>
+                                </div>
+                                <ul class="space-y-1 ml-10 text-gray-300">
+                                    <li>Attack speed: <span class="stat-nerf">25-55%</span> → <span class="stat-buff">25-65%</span></li>
+                                    <li>AD scaling: <span class="stat-nerf">105-125%</span> → <span class="stat-buff">110-130%</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cassiopeia -->
+                    <div class="bg-gradient-to-br from-purple-900/40 to-purple-800/20 rounded-lg p-4 hover:translate-y-1 transition-all">
+                        <div class="flex items-center mb-4">
+                            <img src="https://ddragon.leagueoflegends.com/cdn/14.1.1/img/champion/Cassiopeia.png" 
+                                 class="w-16 h-16 rounded-full border-2 border-purple-400/50">
+                            <div class="ml-4">
+                                <h4 class="text-purple-300 text-lg font-bold">Cassiopeia</h4>
+                                <div class="flex gap-2 mt-1">
+                                    <span class="badge bg-purple-900/50 text-purple-200">Mage</span>
+                                    <span class="badge buff">Buffed</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-black/20 rounded-lg p-3">
+                            <p class="text-purple-200">
+                                Passive Movement Speed: <span class="stat-nerf">4-72</span> → <span class="stat-buff">6-108</span>
+                                <span class="text-gray-400 text-sm block mt-1">with Feats of Strength buff</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- ...Continue with other champions using similar styling... -->
+                </div>
+            </section>
+
+            <!-- Continue with other sections (Champions, Items, etc.) following the same styling pattern -->
+        </div>
+    </div>
+</body>
+</html>

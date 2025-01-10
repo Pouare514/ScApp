@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Intern Data - Skillcamp</title>
+    <link rel="stylesheet" href="dist/output.css">
+    <style>
+        .card-link {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .card-link:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 p-8">
+    <div class="max-w-7xl mx-auto">
+        <a href="index.html" class="text-white mb-8 inline-block hover:text-yellow-500">← Retour</a>
+        <h1 class="text-white text-4xl font-bold mb-8">Données Internes</h1>
+        
+        <div class="flex flex-col md:flex-row gap-8 justify-center">
+            <!-- Box Scrims -->
+            <a href="scrims.html" class="group card-link w-full md:w-1/3 max-w-sm">
+                <h2 class="text-white text-2xl font-bold mb-4 text-center">SCRIMS</h2>
+                <div class="bg-white rounded-xl p-6 h-48 relative overflow-hidden group-hover:shadow-lg transition-shadow">
+                    <div class="absolute inset-0 flex items-center justify-center p-4">
+                        <img src="assets/scrims.png" alt="Scrims" class="w-full h-full object-contain z-10">
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-pink-400 via-blue-300 to-transparent opacity-20"></div>
+                </div>
+            </a>
+
+            <!-- Box Draft -->
+            <a href="draft.html" class="group card-link w-full md:w-1/3 max-w-sm">
+                <h2 class="text-white text-2xl font-bold mb-4 text-center">DRAFT TOOL</h2>
+                <div class="bg-white rounded-xl p-6 h-48 relative overflow-hidden group-hover:shadow-lg transition-shadow">
+                    <div class="absolute inset-0 flex items-center justify-center p-4">
+                        <img src="assets/draft.png" alt="Draft Tool" class="w-full h-full object-contain z-10">
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-pink-400 via-blue-300 to-transparent opacity-20"></div>
+                </div>
+            </a>
+
+            <!-- Box Forces/Faiblesses -->
+            <a href="stats.html" class="group card-link w-full md:w-1/3 max-w-sm">
+                <h2 class="text-white text-2xl font-bold mb-4 text-center">FORCES & FAIBLESSES</h2>
+                <div class="bg-white rounded-xl p-6 h-48 relative overflow-hidden group-hover:shadow-lg transition-shadow">
+                    <div class="absolute inset-0 flex items-center justify-center p-4">
+                        <img src="assets/stats.png" alt="Forces et Faiblesses" class="w-full h-full object-contain z-10">
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-pink-400 via-blue-300 to-transparent opacity-20"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
