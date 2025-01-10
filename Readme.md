@@ -4,9 +4,7 @@ ScApp est une application mobile développée avec React Native pour faciliter l
 
 ## Fonctionnalités
 
-- Enregistrement des scores pour différents jeux
-- Suivi des statistiques des joueurs
-- Interface utilisateur intuitive et conviviale
+- Jsp
 
 ## Installation
 
