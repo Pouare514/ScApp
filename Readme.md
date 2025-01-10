@@ -1,6 +1,6 @@
 # ScApp
 
-ScApp est une application mobile développée avec React Native pour faciliter la gestion des scores et des statistiques dans les jeux de société. Ct encore en dev donc surelent bcp de code pas opti etc blabla bla
+En gros ça sert a faire de la data pour lol
 
 ## Fonctionnalités
 
